@@ -22,19 +22,19 @@ if not defined JAVA (
 
 cd /d "%~dp0HeadlessMC"
 
-rem No saved account yet: open HeadlessMC so you can log in.
+rem No saved account yet: run HeadlessMC's login for you, quit once the account is saved.
 set "ACCOUNTS=HeadlessMC\auth\.accounts.json"
-call :has_account || (
-    echo.
-    echo ==============================================
-    echo   No account saved yet. In the prompt below:
-    echo     1. type  login  and sign in as the BOT account
-    echo     2. type  quit   when it says you're logged in
-    echo ==============================================
-    "%JAVA%" --enable-native-access=ALL-UNNAMED -jar "%HMC_JAR%"
-    call :has_account || ( echo Still no account - run start.bat again to retry. & pause & exit /b 1 )
-)
+call :has_account && goto run
+echo.
+echo ==============================================
+echo   First run: log in with the BOT account.
+echo   Open the link below and sign in. Nothing to type here.
+echo ==============================================
+powershell -NoProfile -Command "$f='%ACCOUNTS%'; [Console]::Out.WriteLine('login'); [Console]::Out.Flush(); $t=0; while (((-not (Test-Path $f)) -or ((Get-Item $f).Length -lt 10)) -and $t -lt 900) { Start-Sleep 2; $t+=2 }; Start-Sleep 2; [Console]::Out.WriteLine('quit'); [Console]::Out.Flush()" | "%JAVA%" --enable-native-access=ALL-UNNAMED -jar "%HMC_JAR%"
+call :has_account || ( echo Login didn't finish - run start.bat again to retry. & pause & exit /b 1 )
+echo Logged in.
 
+:run
 set /a PINGS=%LAUNCH_DELAY%+1
 echo.
 echo ==============================================
