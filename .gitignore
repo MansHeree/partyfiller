@@ -1,6 +1,10 @@
 # downloaded at launch; also holds HeadlessMC's saved account login
 HeadlessMC/
 
+# bot's game dir (mods, config) and build cache, created by setup
+instance/
+.cache/
+
 # local settings (account email, usernames, java path)
 java-path.txt
 

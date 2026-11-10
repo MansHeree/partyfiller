@@ -1,31 +1,44 @@
 @echo off
 title PartyFiller
 setlocal
+cd /d "%~dp0"
 
-rem ---- settings -------------------------------------------------------------
-rem Minecraft version HeadlessMC should launch (Fabric + the mods in .minecraft\mods)
-set "MC_VERSION=fabric:26.1.2"
 rem Seconds to wait before sending the launch command (HeadlessMC loads the account async)
 set "LAUNCH_DELAY=10"
-rem Java 25. Put the full path to java.exe in java-path.txt to use a specific one.
-set "JAVA=java"
-if exist "%~dp0java-path.txt" set /p JAVA=<"%~dp0java-path.txt"
-rem ---------------------------------------------------------------------------
+set "MC_VERSION=fabric:26.1.2"
 
-for /f "usebackq delims=" %%J in (`powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\get-headlessmc.ps1"`) do set "HMC_JAR=%%J"
-if not defined HMC_JAR (
-    echo Could not get HeadlessMC. Check your internet connection.
+echo Checking for updates...
+set "HMC_JAR="
+set "JAVA="
+for /f "usebackq delims=" %%L in (`powershell -NoProfile -ExecutionPolicy Bypass -File "scripts\setup.ps1"`) do (
+    if not defined HMC_JAR (set "HMC_JAR=%%L") else set "JAVA=%%L"
+)
+if not defined JAVA (
+    echo.
+    echo Setup failed - see the messages above.
     pause
     exit /b 1
 )
 
 cd /d "%~dp0HeadlessMC"
-set /a PINGS=%LAUNCH_DELAY%+1
 
+rem No saved account yet: open HeadlessMC so you can log in.
+set "ACCOUNTS=HeadlessMC\auth\.accounts.json"
+call :has_account || (
+    echo.
+    echo ==============================================
+    echo   No account saved yet. In the prompt below:
+    echo     1. type  login  and sign in as the BOT account
+    echo     2. type  quit   when it says you're logged in
+    echo ==============================================
+    "%JAVA%" --enable-native-access=ALL-UNNAMED -jar "%HMC_JAR%"
+    call :has_account || ( echo Still no account - run start.bat again to retry. & pause & exit /b 1 )
+)
+
+set /a PINGS=%LAUNCH_DELAY%+1
+echo.
 echo ==============================================
-echo   PartyFiller - Hypixel dungeon party filler
-echo   %HMC_JAR%  /  %MC_VERSION%
-echo   Starts headless (no game window).
+echo   PartyFiller running headless (no window).
 echo   Close THIS window to stop the bot.
 echo ==============================================
 echo.
@@ -37,3 +50,8 @@ echo.
 echo [PartyFiller stopped] Restarting in 15s... close this window to stop for good.
 ping -n 16 127.0.0.1 >nul
 goto loop
+
+:has_account
+if not exist "%ACCOUNTS%" exit /b 1
+for %%A in ("%ACCOUNTS%") do if %%~zA LSS 10 exit /b 1
+exit /b 0

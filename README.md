@@ -5,24 +5,18 @@ invites from your accounts, and at 5/5 runs `/party warp` → `/party promote <y
 
 Runs as a real Minecraft client with no window via [HeadlessMC](https://github.com/headlesshq/headlessmc).
 
-## Setup
+## Use
 
-1. Java 25 on `PATH`, or its full `java.exe` path in `java-path.txt` next to `start.bat`.
-2. Minecraft 26.1.2 + Fabric in `.minecraft`, with these in `.minecraft/mods`:
-   Fabric API, Fabric Language Kotlin, PackDisabler, and `partyfiller` (build below).
-   NoammAddons is optional (used for auto-kick).
-3. Run `start.bat` once to download HeadlessMC, close it, then in `HeadlessMC/` run
-   `java -jar headlessmc-launcher-wrapper-*.jar`, type `login`, sign in as the bot, then `quit`.
-4. Copy `partyfiller/partyfiller.properties.example` to `.minecraft/config/partyfiller.properties`
-   and set `owners`.
-5. Run `start.bat`.
+Needs a JDK 25 (e.g. [Temurin](https://adoptium.net/)) and git. Then double-click `start.bat`.
 
-## Build
+The first run sets everything up inside this folder, never touching your normal `.minecraft`:
+HeadlessMC, Minecraft 26.1.2 + Fabric, Fabric API, Fabric Language Kotlin, PackDisabler,
+and builds PartyFiller (`partyfiller/`) and NoammAddons (from the `26.1.2` branch of
+MansHeree/NoammAddons). Later runs only update what changed.
 
-```
-cd partyfiller
-gradle build
-```
+If no account is saved yet it opens HeadlessMC: type `login`, sign in as the **bot** account, then `quit`.
+
+Set your usernames in `instance/config/partyfiller.properties` (`owners=`).
 
 ## Commands
 
