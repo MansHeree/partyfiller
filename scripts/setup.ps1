@@ -198,5 +198,21 @@ if (-not (Test-Path $pfConf)) {
     Say "set your usernames in $pfConf"
 }
 
+# Minecraft settings: skip the first-launch screens nobody can click through headless,
+# and keep rendering cheap since nothing is shown.
+$optionsFile = Join-Path $Instance 'options.txt'
+$wanted = [ordered]@{
+    onboardAccessibility   = 'false'
+    joinedFirstServer      = 'true'
+    skipMultiplayerWarning = 'true'
+    renderDistance         = '2'
+    simulationDistance     = '5'
+    maxFps                 = '30'
+}
+$lines = @()
+if (Test-Path $optionsFile) { $lines = @(Get-Content $optionsFile | Where-Object { $_ -notmatch "^($($wanted.Keys -join '|')):" }) }
+$lines += $wanted.Keys | ForEach-Object { "${_}:$($wanted[$_])" }
+[IO.File]::WriteAllLines($optionsFile, [string[]]$lines)
+
 Write-Output $HmcJar
 Write-Output $Java
