@@ -143,7 +143,8 @@ function Invoke-Build($exe, $dir) {
     Push-Location $dir
     $ErrorActionPreference = 'Continue'   # gradle writes warnings to stderr
     try {
-        & $exe build --console=plain -q 2>&1 | ForEach-Object { [Console]::Error.WriteLine("  $_") }
+        & $exe build --no-daemon --console=plain -q "-Pkotlin.compiler.execution.strategy=in-process" 2>&1 |
+            ForEach-Object { [Console]::Error.WriteLine("  $_") }
         if ($LASTEXITCODE -ne 0) { throw "build failed in $dir" }
     } finally { Pop-Location }
 }
