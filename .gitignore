@@ -1,0 +1,14 @@
+# downloaded at launch; also holds HeadlessMC's saved account login
+HeadlessMC/
+
+# local settings (account email, usernames, java path)
+java-path.txt
+
+# dependencies / build output
+partyfiller/build/
+partyfiller/.gradle/
+partyfiller/run/
+*.jar
+
+# logs
+*.log

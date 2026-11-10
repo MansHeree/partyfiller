@@ -1,0 +1,8 @@
+# Copy to .minecraft/config/partyfiller.properties (the mod also creates it on first launch).
+# owners  = accounts whose party invites are auto-accepted; the one in the party gets promoted at hand-off
+# trigger = party size to hand off at
+# warp    = /party warp before promoting
+owners=YourMainIGN, YourAltIGN
+trigger=5
+warp=true
+enabled=true
